@@ -1,15 +1,13 @@
-import { createAuthClient } from "better-auth/react";
-import { expoClient } from "@better-auth/expo/client";
-import * as SecureStore from "expo-secure-store";
+import { createAuthClient } from 'better-auth/react';
+import { inferAdditionalFields } from 'better-auth/client/plugins';
+import { expoClient } from '@better-auth/expo/client';
+import * as SecureStore from 'expo-secure-store';
+import { API_URL } from './config';
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:8081/api/auth",
-
+  baseURL: API_URL,
   plugins: [
-    expoClient({
-      scheme: "messabook",
-      storagePrefix: "messbook",
-      storage: SecureStore,
-    }),
+    expoClient({ scheme: 'messbook', storagePrefix: 'messbook', storage: SecureStore }),
+    inferAdditionalFields({ user: { phone: { type: 'string', required: true } } }),
   ],
 });

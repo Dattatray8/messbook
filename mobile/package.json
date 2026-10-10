@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "messbook-mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
@@ -26,7 +26,6 @@
     "expo-system-ui": "~57.0.2",
     "expo-web-browser": "~57.0.2",
     "lucide-react-native": "^1.33.0",
-    "mongoose": "^9.9.3",
     "nativewind": "^4.2.6",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.2.3",
@@ -48,11 +47,11 @@
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit"
   },
   "private": true
 }

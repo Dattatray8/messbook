@@ -1,23 +1,10 @@
-import { useRouter } from 'expo-router';
-import '../../global.css';
-import { Text, View, StyleSheet } from "react-native";
-import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
+// The root Gate in _layout.tsx redirects to login, onboarding or the tabs.
 export default function Index() {
-  const isloginned = false;
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isloginned) {
-      router.push('/(auth)/login');
-    } else {
-      router.push('/(tabs)' as any);
-    }
-  }, [isloginned]);
-
   return (
-    <View className="flex-1 justify-center items-center">
-      <Text>Loading application...</Text>
+    <View className="flex-1 items-center justify-center bg-canvas">
+      <ActivityIndicator color="#ef8b35" />
     </View>
   );
 }
