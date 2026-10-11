@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert, Image, Text, View } from 'react-native';
 import { api, errMsg } from '@/lib/api';
 import { useMess } from '@/lib/mess-context';
 import { Mess, MEAL_TYPES, MealType, titleCase } from '@/lib/types';
@@ -31,6 +31,12 @@ export default function Onboarding() {
 
   return (
     <Screen>
+      <Image
+        source={require('../../assets/images/messbook-logo.png')}
+        accessibilityLabel="MessBook"
+        resizeMode="cover"
+        style={{ alignSelf: 'center', width: 200, height: 145, marginTop: 8, marginBottom: 16 }}
+      />
       <View className="pt-6">
         <Header title="Set up your mess" subtitle="This takes under a minute. You can change it later in Settings." />
       </View>

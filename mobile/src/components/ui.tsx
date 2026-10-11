@@ -117,15 +117,23 @@ export function Button({
   );
 }
 
-export function Field({ label, error, ...props }: TextInputProps & { label: string; error?: string }) {
+export function Field({
+  label,
+  error,
+  rightElement,
+  ...props
+}: TextInputProps & { label: string; error?: string; rightElement?: ReactNode }) {
   return (
     <View className="mb-4">
       <Text className="mb-1.5 text-xs font-bold uppercase tracking-wide text-muted">{label}</Text>
-      <TextInput
-        placeholderTextColor="#a3aca6"
-        className={`h-12 rounded-2xl border bg-white px-4 text-base text-ink ${error ? 'border-rose' : 'border-line'}`}
-        {...props}
-      />
+      <View>
+        <TextInput
+          placeholderTextColor="#a3aca6"
+          className={`h-12 rounded-2xl border bg-white px-4 text-base text-ink ${rightElement ? 'pr-12' : ''} ${error ? 'border-rose' : 'border-line'}`}
+          {...props}
+        />
+        {rightElement ? <View className="absolute right-3 top-0 h-12 items-center justify-center">{rightElement}</View> : null}
+      </View>
       {error ? <Text className="mt-1 text-xs text-rose">{error}</Text> : null}
     </View>
   );

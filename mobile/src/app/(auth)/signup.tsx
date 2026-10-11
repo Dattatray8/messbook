@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
+import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Utensils } from 'lucide-react-native';
+import { Eye, EyeOff } from 'lucide-react-native';
 import { authClient } from '@/lib/auth-client';
 import { Button, Field } from '@/components/ui';
 
@@ -12,6 +12,7 @@ export default function Signup() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
@@ -38,14 +39,14 @@ export default function Signup() {
 
   return (
     <SafeAreaView className="flex-1 bg-canvas">
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 24, flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
-          <View className="mb-8 flex-row items-center gap-3">
-            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-saffron">
-              <Utensils size={24} color="#fff" />
-            </View>
-            <Text className="text-3xl font-extrabold text-ink">MessBook</Text>
-          </View>
+          <Image
+            source={require('../../../assets/images/messbook-logo.png')}
+            accessibilityLabel="MessBook"
+            resizeMode="cover"
+            style={{ alignSelf: 'center', width: 200, height: 145, marginBottom: 16 }}
+          />
           <Text className="text-xs font-bold tracking-widest text-saffron">START SIMPLY</Text>
           <Text className="mt-2 text-3xl font-extrabold text-ink">Set up your mess.</Text>
           <Text className="mb-8 mt-2 text-base text-muted">Join owners who are leaving the notebook behind.</Text>
@@ -72,10 +73,20 @@ export default function Signup() {
             label="Create a password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
+            secureTextEntry={!showPassword}
             autoCapitalize="none"
             placeholder="At least 8 characters"
             error={errors.password}
+            rightElement={
+              <Pressable
+                onPress={() => setShowPassword((visible) => !visible)}
+                accessibilityRole="button"
+                accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+                hitSlop={8}
+              >
+                {showPassword ? <EyeOff size={20} color="#6f7a73" /> : <Eye size={20} color="#6f7a73" />}
+              </Pressable>
+            }
           />
           <Button title="Create account" onPress={submit} loading={loading} className="mt-2" />
 

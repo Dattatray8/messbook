@@ -9,10 +9,10 @@ import { MessProvider, useMess } from '@/lib/mess-context';
 
 function Gate() {
   const { data: session, isPending } = authClient.useSession();
-  const { mess, loading } = useMess();
+  const { mess, loading, loadedUserId } = useMess();
   const segments = useSegments();
   const router = useRouter();
-  const ready = !isPending && !loading;
+  const ready = !isPending && (!session || (!loading && loadedUserId === session.user.id));
 
   useEffect(() => {
     if (!ready) return;
