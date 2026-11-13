@@ -115,11 +115,6 @@ export function GenerateBill({
             <Row label="Total" value={inr(preview.totalAmount)} bold />
           </Card>
 
-          {preview.coveredByPlanCount > 0 ? (
-            <Text className="mt-3 text-xs text-muted">
-              {preview.coveredByPlanCount} meal(s) are covered by the plan and won&apos;t be charged again.
-            </Text>
-          ) : null}
 
           <View className="mt-5">
             <Button title="Generate bill" onPress={confirm} loading={saving} disabled={!canGenerate} />

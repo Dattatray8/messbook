@@ -18,17 +18,14 @@ export function CustomerForm({
   const [name, setName] = useState(customer?.name ?? '');
   const [phone, setPhone] = useState(customer?.phone ?? '');
   const [billingType, setBillingType] = useState<BillingType>(customer?.billingType ?? 'PAY_PER_MEAL');
-  const [planAmount, setPlanAmount] = useState(customer?.planAmount ? String(customer.planAmount) : '');
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isPlan = billingType !== 'PAY_PER_MEAL';
 
   const save = async () => {
     const e: Record<string, string> = {};
     if (!name.trim()) e.name = 'Name is required';
     if (!/^[0-9+\-\s]{7,15}$/.test(phone.trim())) e.phone = 'Enter a valid phone number';
-    if (isPlan && !(Number(planAmount) > 0)) e.planAmount = 'Enter the plan amount';
     setErrors(e);
     if (Object.keys(e).length) return;
 
@@ -38,7 +35,6 @@ export function CustomerForm({
         name: name.trim(),
         phone: phone.trim(),
         billingType,
-        planAmount: isPlan ? Number(planAmount) : 0,
       };
       if (customer) await api.patch(`/customers/${customer._id}`, body);
       else await api.post('/customers', body);
@@ -68,16 +64,13 @@ export function CustomerForm({
         onChange={setBillingType}
         options={(Object.keys(BILLING_LABEL) as BillingType[]).map((v) => ({ value: v, label: BILLING_LABEL[v] }))}
       />
-      {isPlan ? (
-        <Field
-          label={billingType === 'WEEKLY' ? 'Weekly plan amount (₹)' : 'Monthly plan amount (₹)'}
-          value={planAmount}
-          onChangeText={setPlanAmount}
-          keyboardType="decimal-pad"
-          placeholder="e.g. 2400"
-          error={errors.planAmount}
-        />
-      ) : null}
+      <Text className="mb-3 mt-1 text-xs text-muted">
+        {billingType === 'PAY_PER_MEAL'
+          ? 'A bill is generated automatically whenever a meal is recorded.'
+          : billingType === 'WEEKLY'
+            ? 'A bill is generated at the end of each week based on meals actually recorded.'
+            : 'A bill is generated at the end of each calendar month based on meals actually recorded.'}
+      </Text>
       <Button title={customer ? 'Save changes' : 'Add customer'} onPress={save} loading={saving} />
     </Sheet>
   );

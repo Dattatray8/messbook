@@ -3,6 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { FilePlus } from 'lucide-react-native';
 import { useApi } from '@/lib/hooks';
+import { useNotifications } from '@/lib/notifications-context';
 import { fmtShort, inr } from '@/lib/format';
 import { BILLING_LABEL, Bill, Customer } from '@/lib/types';
 import { Badge, Button, Card, Chip, EmptyState, ErrorBanner, Header, Loading, Screen, Stat } from '@/components/ui';
@@ -10,6 +11,7 @@ import { GenerateBill } from '@/components/GenerateBill';
 
 export default function Bills() {
   const router = useRouter();
+  const { refreshUnread } = useNotifications();
   const [status, setStatus] = useState<'' | 'Generated' | 'PAID'>('');
   const [generating, setGenerating] = useState(false);
   const { data, loading, refreshing, error, refresh, reload } = useApi<Bill[]>('/bills', { status: status || undefined });
@@ -74,6 +76,7 @@ export default function Bills() {
         onClose={() => setGenerating(false)}
         onGenerated={(id) => {
           reload();
+          void refreshUnread();
           router.push(`/bill/${id}`);
         }}
       />

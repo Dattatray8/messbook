@@ -1,1 +1,3 @@
-export const API_URL = 'http://10.163.76.79:3000'; 
+export const API_URL =
+    process.env.EXPO_PUBLIC_API_URL?.trim().replace(/\/+$/, '') ??
+    'http://localhost:3000';

@@ -15,7 +15,6 @@ export interface Customer {
   phone: string;
   isActive: boolean;
   billingType: BillingType;
-  planAmount: number;
   outstanding?: number;
 }
 
@@ -98,3 +97,69 @@ export const BILLING_LABEL: Record<BillingType, string> = {
   MONTHLY: 'Monthly',
 };
 export const titleCase = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
+
+export interface AppNotification {
+  _id: string;
+  type: 'AUTO_BILLS_GENERATED' | 'AUTOMATION_ERROR' | 'MANUAL_BILLS_GENERATED';
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  relatedType?: 'bill' | 'bills' | 'automation' | null;
+  relatedId?: string | null;
+}
+
+export interface NotificationsPage {
+  items: AppNotification[];
+  nextCursor: string | null;
+  unreadCount: number;
+}
+
+export type AutomationStatus = 'DISABLED' | 'AWAITING_CONFIGURATION' | 'AWAITING_FIRST_RUN' | 'ERROR' | 'ACTIVE';
+
+export interface AutomationSettings {
+  enabled: boolean;
+  timezone: string;
+  status: AutomationStatus;
+  schedulerConfigured: boolean;
+  lastScheduledRunAt: string | null;
+  lastRun: {
+    status?: string | null;
+    finishedAt?: string | null;
+    created: number;
+    skipped: number;
+    failed: number;
+    errorSummary?: string | null;
+  } | null;
+  nextPeriodCloses: { weekly: string; monthly: string };
+}
+
+export interface AutomationRunRow {
+  runId: string;
+  trigger: 'SCHEDULED' | 'MANUAL';
+  status: 'RUNNING' | 'SUCCESS' | 'PARTIAL' | 'FAILED' | 'SKIPPED';
+  startedAt: string;
+  created: number;
+  skippedAlreadyBilled: number;
+  skippedNothingToBill: number;
+  failed: number;
+  errorSummary?: string | null;
+}
+
+export interface GenerateNowResult {
+  runId: string;
+  status: 'SUCCESS' | 'PARTIAL' | 'FAILED' | 'SKIPPED';
+  created: number;
+  skippedAlreadyBilled: number;
+  skippedNothingToBill: number;
+  failed: number;
+  hasMore: boolean;
+  failures: { customerId: string; customerName?: string; reason: string }[];
+}
+
+export interface GenerateNowPreview {
+  dryRun: true;
+  eligibleCustomers: number;
+  alreadyBilled: number;
+  toProcess: number;
+}

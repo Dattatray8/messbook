@@ -40,3 +40,13 @@ export function monthPeriod(ref: Date) {
   const nextStart = new Date(Date.UTC(y, m + 1, 1) - IST_OFFSET_MS);
   return { start, end: new Date(nextStart.getTime() - 1) };
 }
+
+/** 'YYYY-MM-DD' for the IST calendar day containing `d`. */
+export function toISTDateString(d: Date): string {
+  return new Date(d.getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+}
+
+/** 'YYYY-MM' for the IST calendar month containing `d`. */
+export function toISTMonthString(d: Date): string {
+  return toISTDateString(d).slice(0, 7);
+}

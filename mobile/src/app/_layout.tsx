@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { authClient } from '@/lib/auth-client';
 import { MessProvider, useMess } from '@/lib/mess-context';
+import { NotificationsProvider } from '@/lib/notifications-context';
 
 function Gate() {
   const { data: session, isPending } = authClient.useSession();
@@ -43,8 +44,10 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <MessProvider>
-        <StatusBar style="dark" />
-        <Gate />
+        <NotificationsProvider>
+          <StatusBar style="dark" />
+          <Gate />
+        </NotificationsProvider>
       </MessProvider>
     </SafeAreaProvider>
   );

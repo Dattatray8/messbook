@@ -86,19 +86,24 @@ Billing accuracy is central to MessBook. The server applies billing rules based 
 
 | Billing type | Billing calculation |
 |---|---|
-| Pay per meal | Includes unbilled meal records in the requested range, grouped by item and price |
-| Weekly | Plan amount plus applicable items categorized as `EXTRA`, for Monday–Sunday billing periods in Indian Standard Time |
-| Monthly | Plan amount plus applicable items categorized as `EXTRA`, for calendar-month billing periods in Indian Standard Time |
+| Pay per meal | A bill is generated after meal recording, based on actual unbilled records and their saved prices |
+| Weekly | At the end of each Monday–Sunday period (IST), charge all recorded meals at their saved prices |
+| Monthly | At the end of each calendar month (IST), charge all recorded meals at their saved prices |
 
 ### Billing integrity
 
 - **Historical prices are preserved.** Meal records store the item name and price at the time the meal is recorded.
 - **The server calculates bills.** Prices are read from the server's menu and billing data; the client cannot supply arbitrary prices to determine the bill total.
 - **Billed meals are associated with their bill.** Once included in a bill, a meal is excluded from future unbilled-meal calculations and cannot be deleted through the normal meal-recording workflow.
-- **Billing periods are protected against duplication.** Weekly and monthly billing periods are checked so an already-billed period cannot simply be billed again.
+- **Flexible bill timing.** Pay-per-meal customers are billed when meals are recorded; weekly and monthly customers are billed for actual meals at the end of their cycle. Owners can also generate an interim weekly/monthly bill manually.
+- **Billing periods are protected against duplication.** Final weekly and monthly billing periods are checked so an already-billed period cannot simply be billed again; interim manual bills do not prevent the end-of-period bill from charging remaining meals.
 - **Bill history remains meaningful.** Subsequent menu-price changes should not silently change historical meal records.
 
 These safeguards help maintain consistent billing records and reduce accidental duplicate charges.
+
+## Notifications & automatic billing
+
+See [docs/NOTIFICATIONS_AND_AUTOMATION.md](docs/NOTIFICATIONS_AND_AUTOMATION.md) for setup (Render cron job, Expo push), the scheduler endpoint, and billing-rule assumptions.
 
 <p align="center">
   <strong>MessBook</strong><br />

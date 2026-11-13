@@ -13,6 +13,8 @@ import { MealRecordsModule } from './meal-records/meal-records.module';
 import { BillsModule } from './bills/bills.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { AutomationModule } from './automation/automation.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     MealRecordsModule,
     BillsModule,
     DashboardModule,
+    NotificationsModule,
+    AutomationModule,
   ],
   controllers: [AppController],
   providers: [

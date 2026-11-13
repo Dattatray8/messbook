@@ -29,22 +29,24 @@ describe('computeBill', () => {
     expect(r.totalAmount).toBe(170);
   });
 
-  it('weekly plan charges plan amount only, meals are covered', () => {
+  it('weekly billing charges actual recorded meals, without a fixed plan amount', () => {
     const r = computeBill('WEEKLY', 500, [
       rec('Thali', 5, 80),
       rec('Dinner', 5, 70, 'DINNER'),
     ]);
-    expect(r.totalAmount).toBe(500);
-    expect(r.coveredCount).toBe(2);
+    expect(r.totalAmount).toBe(750);
+    expect(r.coveredCount).toBe(0);
   });
 
-  it('monthly plan adds EXTRA items on top', () => {
+  it('monthly billing charges all recorded meals at their recorded prices', () => {
     const r = computeBill('MONTHLY', 2400, [
       rec('Thali', 30, 80),
       rec('Sweet', 2, 25, 'EXTRA'),
     ]);
     expect(r.totalAmount).toBe(2450);
     expect(r.items).toHaveLength(2);
+    expect(r.items[0].name).toBe('Thali');
+    expect(r.items[0].amount).toBe(2400);
   });
 });
 

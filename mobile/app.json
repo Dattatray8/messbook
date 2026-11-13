@@ -20,7 +20,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.messbook.app"
+      "package": "com.messbook.app",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "single",
@@ -36,10 +37,27 @@
           "imageWidth": 76
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "color": "#ef8b35"
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
     ],
     "experiments": {
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "edce60b3-2d2a-4af4-bdb3-4f916ae387ca"
+      }
+    },
+    "owner": "dattatray8"
   }
 }

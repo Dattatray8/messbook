@@ -5,13 +5,17 @@ import { BookOpen, ChevronRight, LogOut } from 'lucide-react-native';
 import { api, errMsg } from '@/lib/api';
 import { authClient } from '@/lib/auth-client';
 import { useMess } from '@/lib/mess-context';
+import { useNotifications } from '@/lib/notifications-context';
 import { Mess, MEAL_TYPES, MealType, titleCase } from '@/lib/types';
 import { Button, Card, Chip, Field, Header, Row, Screen } from '@/components/ui';
+import { AutomationSection } from '@/components/AutomationSection';
+import { NotificationSettings } from '@/components/NotificationSettings';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const { mess, setMess } = useMess();
+  const { unregisterDevice } = useNotifications();
   const [name, setName] = useState(mess?.name ?? '');
   const [phone, setPhone] = useState(mess?.phone ?? '');
   const [mealTypes, setMealTypes] = useState<MealType[]>(mess?.mealTypes ?? [...MEAL_TYPES]);
@@ -42,6 +46,8 @@ export default function SettingsScreen() {
         text: 'Log out',
         style: 'destructive',
         onPress: async () => {
+          // Stop this device receiving the owner's alerts BEFORE the session is gone.
+          await unregisterDevice();
           await authClient.signOut();
           setMess(null);
         },
@@ -60,6 +66,9 @@ export default function SettingsScreen() {
         <Row label="Email" value={user?.email ?? '—'} />
         <Row label="Phone" value={user?.phone ?? '—'} />
       </Card>
+
+      <AutomationSection />
+      <NotificationSettings />
 
       <Pressable onPress={() => router.push('/menu')} className="mb-6">
         <Card className="flex-row items-center justify-between">

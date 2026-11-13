@@ -1,8 +1,9 @@
 import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BookOpen, IndianRupee, Plus, Users, UtensilsCrossed, Wallet } from 'lucide-react-native';
+import { Bell, BookOpen, IndianRupee, Plus, Users, UtensilsCrossed, Wallet } from 'lucide-react-native';
 import { useApi } from '@/lib/hooks';
 import { useMess } from '@/lib/mess-context';
+import { useNotifications } from '@/lib/notifications-context';
 import { inr } from '@/lib/format';
 import { DashboardData, MEAL_TYPES, titleCase } from '@/lib/types';
 import { Card, ErrorBanner, Header, Loading, Screen, Stat } from '@/components/ui';
@@ -10,13 +11,36 @@ import { Card, ErrorBanner, Header, Loading, Screen, Stat } from '@/components/u
 export default function Dashboard() {
   const router = useRouter();
   const { mess } = useMess();
+  const { unreadCount, refreshUnread } = useNotifications();
   const { data, loading, refreshing, error, refresh, reload } = useApi<DashboardData>('/dashboard');
+
+  const onRefresh = () => {
+    refresh();
+    void refreshUnread();
+  };
 
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
 
   return (
-    <Screen refreshing={refreshing} onRefresh={refresh}>
-      <Header title={mess?.name ?? 'MessBook'} subtitle={today} />
+    <Screen refreshing={refreshing} onRefresh={onRefresh}>
+      <Header
+        title={mess?.name ?? 'MessBook'}
+        subtitle={today}
+        right={
+          <Pressable
+            onPress={() => router.push('/notifications')}
+            accessibilityLabel={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'}
+            className="h-11 w-11 items-center justify-center rounded-full border border-line bg-white active:opacity-80"
+          >
+            <Bell size={20} color="#17211d" />
+            {unreadCount > 0 ? (
+              <View className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full bg-saffron px-1">
+                <Text className="text-[10px] font-extrabold text-white">{unreadCount > 99 ? '99+' : unreadCount}</Text>
+              </View>
+            ) : null}
+          </Pressable>
+        }
+      />
       {error ? <ErrorBanner message={error} onRetry={reload} /> : null}
       {loading && !data ? (
         <Loading />

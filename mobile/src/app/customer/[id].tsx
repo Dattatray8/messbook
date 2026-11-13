@@ -52,9 +52,6 @@ export default function CustomerDetails() {
               <Text className="mt-0.5 text-sm text-muted">{data.customer.phone}</Text>
               <View className="mt-2 flex-row gap-2">
                 <Badge label={BILLING_LABEL[data.customer.billingType]} tone="blue" />
-                {data.customer.billingType !== 'PAY_PER_MEAL' ? (
-                  <Badge label={`${inr(data.customer.planAmount)} plan`} tone="saffron" />
-                ) : null}
                 {!data.customer.isActive ? <Badge label="Inactive" tone="muted" /> : null}
               </View>
             </View>

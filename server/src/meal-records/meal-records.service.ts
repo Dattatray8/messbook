@@ -2,11 +2,13 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { endOfDayIST, parseDay, startOfDayIST } from '../common/dates';
+import { endOfDayIST, parseDay, startOfDayIST, toISTDateString } from '../common/dates';
+import { BillsService } from '../bills/bills.service';
 import {
   Customer,
   CustomerDocument,
@@ -21,6 +23,7 @@ import { CreateMealRecordDto } from './dto/create-meal-record.dto';
 
 @Injectable()
 export class MealRecordsService {
+  private readonly logger = new Logger(MealRecordsService.name);
   constructor(
     @InjectModel(MealRecord.name)
     private readonly mealRecordModel: Model<MealRecordDocument>,
@@ -29,6 +32,7 @@ export class MealRecordsService {
     @InjectModel(MenuItem.name)
     private readonly menuItemModel: Model<MenuItemDocument>,
     @InjectModel(Mess.name) private readonly messModel: Model<MessDocument>,
+    private readonly billsService: BillsService,
   ) {}
 
   async create(messId: string, dto: CreateMealRecordDto) {
@@ -79,7 +83,33 @@ export class MealRecordsService {
         billId: null,
       };
     });
-    return this.mealRecordModel.insertMany(docs);
+    const created = await this.mealRecordModel.insertMany(docs);
+
+    // Pay-per-meal customers are billed immediately after recording meals. The shared bill
+    // service only includes still-unbilled records for that IST date, and stores price snapshots.
+    // If bill persistence fails, the meal records remain saved and can be billed manually later.
+    if (
+      customer.billingType === 'PAY_PER_MEAL' &&
+      created.length > 0 &&
+      docs.some((record) => record.totalAmount > 0)
+    ) {
+      const day = toISTDateString(mealDate);
+      try {
+        await this.billsService.generate(messId, {
+          customerId: String(customer._id),
+          startDate: day,
+          endDate: day,
+        });
+      } catch (error) {
+        // The meal records are already safely saved. Do not tell the user meal recording failed;
+        // leave any unbilled records available for the existing manual billing flow and log the issue.
+        this.logger.error(
+          `Automatic pay-per-meal billing failed for customer ${String(customer._id)}: ${(error as Error).message}`,
+        );
+      }
+    }
+
+    return created;
   }
 
   async list(

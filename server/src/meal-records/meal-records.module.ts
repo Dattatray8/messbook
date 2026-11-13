@@ -11,12 +11,14 @@ import {
   MessSchema,
 } from '../core/schemas';
 import { MessModule } from '../mess/mess.module';
+import { BillsModule } from '../bills/bills.module';
 import { MealRecordsController } from './meal-records.controller';
 import { MealRecordsService } from './meal-records.service';
 
 @Module({
   imports: [
     MessModule,
+    BillsModule,
     MongooseModule.forFeature([
       { name: MealRecord.name, schema: MealRecordSchema },
       { name: Customer.name, schema: CustomerSchema },

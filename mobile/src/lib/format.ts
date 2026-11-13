@@ -22,3 +22,10 @@ export const addDaysLocal = (d: Date, n: number) => {
 };
 
 export const isSameDay = (a: Date, b: Date) => toDayString(a) === toDayString(b);
+
+/** Date in Indian Standard Time regardless of the device timezone (billing periods are IST). */
+export const fmtDateIST = (iso: string | Date) =>
+  new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
+
+export const fmtDateTime = (iso: string | Date) =>
+  new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });

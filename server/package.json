@@ -76,6 +76,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@nestjs/mongoose$": "<rootDir>/testing/nestjs-mongoose.stub.ts"
+    },
+    "coveragePathIgnorePatterns": [
+      "/testing/"
+    ]
   }
 }
